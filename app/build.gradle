@@ -6,6 +6,9 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
+    dataBinding {
+        enabled true
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -15,6 +18,8 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
