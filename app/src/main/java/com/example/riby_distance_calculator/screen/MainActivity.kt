@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         mPlacesClient = Places.createClient(this)
         mapView = binding.map
-
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
         mapView.getMapAsync(this)
@@ -82,6 +81,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         updateLocationUI(mMap,this)
         // deviceLocation
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
