@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.ProgressBar
 import com.example.riby_distance_calculator.R
+import com.example.riby_distance_calculator.utils.Permissions.getLocationPermission
 
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -16,7 +17,7 @@ class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
+        getLocationPermission(this)
         splashProgress = findViewById(R.id.splashProgress)
         playProgress()
         //imageView1.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this,R.anim.anim))
