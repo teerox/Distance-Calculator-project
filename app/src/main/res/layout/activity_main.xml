@@ -73,8 +73,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"
+                    android:id="@+id/distance"
                     android:fontFamily="@font/gotham"
-                    android:text="0KM" />
+                    android:text="0Meters" />
 
             </LinearLayout>
 
@@ -97,7 +98,7 @@
 
                 <Button
                     android:id="@+id/btn_stop_location_updates"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/button_stop_drawable"
