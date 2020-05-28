@@ -1,24 +1,15 @@
 package com.example.riby_distance_calculator.screen
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Criteria
-import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.agromallapplication.utils.GetResult
+import com.example.riby_distance_calculator.utils.GetResult
 import com.example.riby_distance_calculator.BaseApplication
 import com.example.riby_distance_calculator.R
 import com.example.riby_distance_calculator.databinding.ActivityMainBinding
@@ -27,25 +18,24 @@ import com.example.riby_distance_calculator.utils.Permissions.KEY_CAMERA_POSITIO
 import com.example.riby_distance_calculator.utils.Permissions.KEY_LOCATION
 import com.example.riby_distance_calculator.utils.Permissions.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
 import com.example.riby_distance_calculator.utils.Permissions.getLocationPermission
+import com.example.riby_distance_calculator.utils.Permissions.gpsEnabled
+import com.example.riby_distance_calculator.utils.Permissions.locationEnable
 import com.example.riby_distance_calculator.utils.Permissions.mCameraPosition
 import com.example.riby_distance_calculator.utils.Permissions.mLastKnownLocation
 import com.example.riby_distance_calculator.utils.Permissions.mLocationPermissionGranted
 import com.example.riby_distance_calculator.utils.Permissions.updateLocationUI
+import com.example.riby_distance_calculator.utils.Permissions.zoom
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
-import com.google.maps.android.SphericalUtil
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -86,38 +76,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         distanceViewModel = ViewModelProvider(this,viewModelFactory).get(DistanceViewModel::class.java)
 
+        if(!gpsEnabled){
+            locationEnable(this)
+        }
 
 
         //Start button
         binding.btnStartLocationUpdates.setOnClickListener {
             mMap.clear()
-            if(mLocationPermissionGranted) {
-                binding.btnStartLocationUpdates.visibility = View.GONE
-                binding.btnStopLocationUpdates.visibility = View.VISIBLE
-                deviceLocation("Start", object : GetResult {
-                    override fun onSuccess(result: String) {
-                        distanceViewModel.getStartCoordinate(result)
+            if(!gpsEnabled){
+                locationEnable(this)
+            }else {
+                if (mLocationPermissionGranted) {
+                    binding.btnStartLocationUpdates.visibility = View.GONE
+                    binding.btnStopLocationUpdates.visibility = View.VISIBLE
+                    deviceLocation("Start", object : GetResult {
+                        override fun onSuccess(result: String) {
+                            distanceViewModel.getStartCoordinate(result)
 
-                    }
+                        }
+                        override fun onFailure(failed: String) {
 
-                    override fun onFailure(failed: String) {
-
-                    }
-
-                })
-            }else{
-                getLocationPermission(this,mMap)
-                Snackbar.make(it,"Permission Required",Snackbar.LENGTH_LONG).show()
+                        }
+                    })
+                } else {
+                    getLocationPermission(this)
+                    Snackbar.make(it, "Permission Required", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
 
 
+
         //Stop button
         binding.btnStopLocationUpdates.setOnClickListener {
-            getLocationPermission(this,mMap)
+            getLocationPermission(this)
             binding.btnStartLocationUpdates.visibility = View.VISIBLE
             binding.btnStopLocationUpdates.visibility = View.GONE
-            deviceLocation("Stop",object :GetResult{
+            deviceLocation("Stop",object : GetResult {
                 override fun onSuccess(result: String) {
                     distanceViewModel.getStopCoordinate(result)
                     distanceViewModel.getDistanceFromLatLonInKm()
@@ -130,6 +126,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             })
 
         }
+
+
 
         //Display Distance
         distanceViewModel.items.observeForever {
@@ -153,7 +151,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         mMap = map
         // Prompt the user for permission.
-        getLocationPermission(this,mMap)
+        zoom(this,mMap)
+        getLocationPermission(this)
         updateLocationUI(mMap,this)
 
 
@@ -184,6 +183,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             if (mLocationPermissionGranted) {
                 val locationResult = mFusedLocationProviderClient!!.lastLocation
                 locationResult.addOnCompleteListener(this) { task ->
+
                     if (task.isSuccessful) { // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.result
                         if (mLastKnownLocation != null) {
@@ -218,13 +218,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
-            getLocationPermission(this,mMap)
+            getLocationPermission(this)
         } catch (e: SecurityException) {
             Toast.makeText(this,"Location request isn't Enabled", Toast.LENGTH_LONG).show()
             Log.e("Exception: %s", e.message.toString())
         }
     }
-
 
 
 }

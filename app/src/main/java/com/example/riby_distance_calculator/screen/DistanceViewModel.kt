@@ -78,7 +78,10 @@ class DistanceViewModel @Inject constructor(private val distanceRepository: Dist
             val secondCoordinateLongitude = secondCoordinateString[0].toDouble()
             val secondCoordinateLatitude = secondCoordinateString[1].toDouble()
 
+            //["1.234/2.345","1.234/2.345"]
+           // [1.234,2.345]
             // calculate Distance
+
             val distance = SphericalUtil.computeDistanceBetween(LatLng(firstCoordinateLatitude,firstCoordinateLongitude),
                 LatLng(secondCoordinateLatitude,secondCoordinateLongitude))
             val distanceCovered = "%.2f".format(distance) + "Meters"
