@@ -1,24 +1,15 @@
 package com.example.riby_distance_calculator.screen
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Criteria
-import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.agromallapplication.utils.GetResult
+import com.example.riby_distance_calculator.utils.GetResult
 import com.example.riby_distance_calculator.BaseApplication
 import com.example.riby_distance_calculator.R
 import com.example.riby_distance_calculator.databinding.ActivityMainBinding
@@ -37,15 +28,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.snackbar.Snackbar
-import com.google.maps.android.SphericalUtil
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -117,7 +104,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             getLocationPermission(this,mMap)
             binding.btnStartLocationUpdates.visibility = View.VISIBLE
             binding.btnStopLocationUpdates.visibility = View.GONE
-            deviceLocation("Stop",object :GetResult{
+            deviceLocation("Stop",object : GetResult {
                 override fun onSuccess(result: String) {
                     distanceViewModel.getStopCoordinate(result)
                     distanceViewModel.getDistanceFromLatLonInKm()
@@ -184,6 +171,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             if (mLocationPermissionGranted) {
                 val locationResult = mFusedLocationProviderClient!!.lastLocation
                 locationResult.addOnCompleteListener(this) { task ->
+
                     if (task.isSuccessful) { // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = task.result
                         if (mLastKnownLocation != null) {

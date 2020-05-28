@@ -40,6 +40,7 @@ object Permissions{
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true
+            
             val locationManager = activity.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager?
             val criteria = Criteria()
             val loc =  locationManager?.getLastKnownLocation(locationManager.getBestProvider(criteria, false))

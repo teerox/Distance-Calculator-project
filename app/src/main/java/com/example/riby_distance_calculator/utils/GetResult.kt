@@ -1,4 +1,4 @@
-package com.example.agromallapplication.utils
+package com.example.riby_distance_calculator.utils
 
 interface GetResult {
     fun onSuccess(result: String)
