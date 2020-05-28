@@ -17,7 +17,9 @@ data class Distance(
     @ColumnInfo(name = "stopLongitude")
     var stopLongitude:String = "",
     @ColumnInfo(name = "stopLatitude")
-    var stopLatitude:String = ""
+    var stopLatitude:String = "",
+    @ColumnInfo(name = "distanceCovered")
+    var distanceCovered:String = ""
 
 
 ): Parcelable
