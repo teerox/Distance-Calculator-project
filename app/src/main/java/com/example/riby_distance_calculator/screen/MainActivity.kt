@@ -214,5 +214,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    override fun onStart() {
+        super.onStart()
+        Log.e("Started","Started")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.e("Restart","Started")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e("Resume","Started")
+
+    }
 
 }
